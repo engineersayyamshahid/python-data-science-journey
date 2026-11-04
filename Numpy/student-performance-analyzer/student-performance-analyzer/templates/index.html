@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Student Performance Analyzer — academic analytics powered by Python and NumPy.">
+  <title>Student Performance Analyzer | Sayyam Shahid</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+<div class="app-shell">
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="brand-mark">SA</div>
+      <div><strong>Student<span>Analyzer</span></strong><small>ACADEMIC INTELLIGENCE</small></div>
+    </div>
+    <div class="nav-label">WORKSPACE</div>
+    <nav class="nav-menu">
+      <button class="nav-link active" data-view="overview"><span>▦</span> Overview</button>
+      <button class="nav-link" data-view="students"><span>♙</span> Students</button>
+      <button class="nav-link" data-view="analytics"><span>◫</span> Analytics</button>
+    </nav>
+    <div class="sidebar-bottom">
+      <div class="mini-profile"><div class="avatar">SS</div><div><strong>Sayyam Shahid</strong><small>AI Engineer · Developer</small></div></div>
+      <div class="sidebar-foot">Built with Python & NumPy</div>
+    </div>
+  </aside>
+
+  <main class="main-area">
+    <header class="topbar">
+      <button class="mobile-menu" id="mobileMenu" aria-label="Toggle navigation">☰</button>
+      <div class="breadcrumb">Workspace <span>/</span> <strong id="pageName">Overview</strong></div>
+      <div class="top-actions">
+        <span class="live-dot">● Live analytics</span>
+        <div class="top-avatar">SS</div>
+      </div>
+    </header>
+
+    <section class="page-content">
+      <div class="page-heading">
+        <div>
+          <p class="eyebrow">ACADEMIC OVERVIEW</p>
+          <h1 id="headingTitle">Student performance</h1>
+          <p class="subheading">Track academic outcomes, discover patterns, and make data-informed decisions.</p>
+        </div>
+        <div class="heading-actions">
+          <a class="btn btn-light" href="/api/export/csv">↓ Export CSV</a>
+          <button class="btn btn-primary" id="addStudentTop">＋ Add student</button>
+        </div>
+      </div>
+
+      <section class="view active" id="overviewView">
+        <div class="stats-grid">
+          <article class="stat-card"><div class="stat-top"><span>Total students</span><span class="stat-icon blue">♙</span></div><strong id="totalStudents">—</strong><small class="stat-note">Registered learners</small></article>
+          <article class="stat-card"><div class="stat-top"><span>Class average</span><span class="stat-icon purple">∑</span></div><strong id="classAverage">—</strong><small class="stat-note">Across all subjects</small></article>
+          <article class="stat-card"><div class="stat-top"><span>Pass rate</span><span class="stat-icon green">✓</span></div><strong id="passRate">—</strong><small class="stat-note">Passed every subject</small></article>
+          <article class="stat-card"><div class="stat-top"><span>Highest mark</span><span class="stat-icon orange">↗</span></div><strong id="highestMark">—</strong><small class="stat-note">Best individual score</small></article>
+        </div>
+
+        <div class="chart-grid">
+          <article class="panel chart-panel">
+            <div class="panel-heading"><div><h2>Subject performance</h2><p>Average marks by subject</p></div><span class="pill">Subject averages</span></div>
+            <div class="chart-wrap"><canvas id="subjectChart"></canvas></div>
+          </article>
+          <article class="panel chart-panel">
+            <div class="panel-heading"><div><h2>Marks distribution</h2><p>How scores are distributed</p></div><span class="pill">All marks</span></div>
+            <div class="chart-wrap"><canvas id="distributionChart"></canvas></div>
+          </article>
+        </div>
+
+        <div class="bottom-grid">
+          <article class="panel">
+            <div class="panel-heading"><div><h2>Top performers</h2><p>Ranked by average marks</p></div><button class="text-btn" data-goto="students">View all →</button></div>
+            <div class="table-wrap"><table><thead><tr><th>STUDENT</th><th>ROLL NO.</th><th>AVERAGE</th><th>STATUS</th></tr></thead><tbody id="topStudentsBody"></tbody></table></div>
+          </article>
+          <article class="panel insight-panel">
+            <div class="panel-heading"><div><h2>Class insights</h2><p>Statistical summary powered by NumPy</p></div><span class="insight-symbol">✦</span></div>
+            <div class="insight-row"><span>Median marks</span><strong id="medianValue">—</strong></div>
+            <div class="insight-row"><span>Standard deviation</span><strong id="stdValue">—</strong></div>
+            <div class="insight-row"><span>Students passed</span><strong id="passedCount">—</strong></div>
+            <div class="insight-row"><span>Need improvement</span><strong id="failedCount">—</strong></div>
+            <div class="insight-callout">Insights are calculated from the latest saved student marks.</div>
+          </article>
+        </div>
+      </section>
+
+      <section class="view" id="studentsView">
+        <div class="panel">
+          <div class="panel-heading student-toolbar">
+            <div><h2>Student directory</h2><p>Manage student records and subject marks.</p></div>
+            <div class="toolbar-actions"><input id="studentSearch" class="search-input" placeholder="Search name or roll no..." aria-label="Search students"><button class="btn btn-primary" id="addStudent">＋ Add student</button></div>
+          </div>
+          <div class="table-wrap"><table class="wide-table"><thead><tr><th>STUDENT</th><th>ROLL NO.</th><th>PYTHON</th><th>MATHS</th><th>STATISTICS</th><th>DATA SCI.</th><th>DATABASE</th><th>AVERAGE</th><th>STATUS</th><th>ACTIONS</th></tr></thead><tbody id="studentsBody"></tbody></table></div>
+          <div class="table-footer" id="studentCount">Loading records...</div>
+        </div>
+      </section>
+
+      <section class="view" id="analyticsView">
+        <div class="stats-grid compact-stats">
+          <article class="stat-card"><div class="stat-top"><span>Median</span><span class="stat-icon purple">M</span></div><strong id="analyticsMedian">—</strong><small class="stat-note">Middle score</small></article>
+          <article class="stat-card"><div class="stat-top"><span>Std. deviation</span><span class="stat-icon blue">σ</span></div><strong id="analyticsStd">—</strong><small class="stat-note">Score dispersion</small></article>
+          <article class="stat-card"><div class="stat-top"><span>Passed</span><span class="stat-icon green">✓</span></div><strong id="analyticsPassed">—</strong><small class="stat-note">All subjects ≥ 50</small></article>
+          <article class="stat-card"><div class="stat-top"><span>Needs improvement</span><span class="stat-icon orange">!</span></div><strong id="analyticsFailed">—</strong><small class="stat-note">At least one subject below 50</small></article>
+        </div>
+        <article class="panel">
+          <div class="panel-heading"><div><h2>Subject statistics</h2><p>Average, highest and lowest marks for each subject.</p></div></div>
+          <div class="table-wrap"><table><thead><tr><th>SUBJECT</th><th>AVERAGE</th><th>HIGHEST</th><th>LOWEST</th></tr></thead><tbody id="subjectStatsBody"></tbody></table></div>
+        </article>
+        <article class="panel analytics-note">
+          <h2>How the NumPy engine works</h2>
+          <p>The backend converts the saved student marks into a two-dimensional NumPy array. It uses axis-based calculations for subject and student averages, boolean masks for pass/fail analysis, and sorting functions to generate student rankings.</p>
+          <div class="code-chips"><code>np.mean(matrix, axis=0)</code><code>np.all(matrix &gt;= 50, axis=1)</code><code>np.argsort(averages)</code><code>np.std(matrix)</code></div>
+        </article>
+      </section>
+
+      <footer class="footer">© 2026 Student Performance Analyzer <span>Developed by <strong>AI Engineer Sayyam Shahid</strong></span></footer>
+    </section>
+  </main>
+</div>
+
+<div class="modal-backdrop" id="studentModal" aria-hidden="true">
+  <div class="modal">
+    <div class="modal-header"><div><p class="eyebrow">STUDENT RECORD</p><h2 id="modalTitle">Add student</h2></div><button class="close-btn" id="closeModal" aria-label="Close">×</button></div>
+    <form id="studentForm">
+      <input type="hidden" id="studentId">
+      <div class="form-grid">
+        <label class="full-field">Full name<input id="studentName" required maxlength="80" placeholder="e.g. Ayesha Khan"></label>
+        <label class="full-field">Roll number<input id="rollNo" required maxlength="30" placeholder="e.g. STU-011"></label>
+        <div class="form-section-title">SUBJECT MARKS <small>Enter a score from 0 to 100.</small></div>
+        {% for subject in subjects %}
+        <label>{{ subject.replace('_', ' ').title() }}<input class="mark-input" data-subject="{{ subject }}" type="number" min="0" max="100" step="1" value="0" required></label>
+        {% endfor %}
+      </div>
+      <div class="form-error" id="formError"></div>
+      <div class="modal-actions"><button type="button" class="btn btn-light" id="cancelModal">Cancel</button><button type="submit" class="btn btn-primary" id="saveStudent">Save student</button></div>
+    </form>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
